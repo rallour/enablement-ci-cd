@@ -8,17 +8,17 @@ objects:
 - apiVersion: route.openshift.io/v1
   kind: Route
   metadata:
-    name: gitlab
+    name: "${APPLICATION_NAME}"
     labels:
-      app: gitlab
-      name: gitlab
+      app: "${APPLICATION_NAME}"
+      name: "${APPLICATION_NAME}"
   spec:
-    host: gitlab-jason-ci-cd.apps.ae9d.example.opentlc.com
+    host: "${APPLICATION_HOSTNAME}"
     port:
       targetPort: 443-https
     to:
       kind: Service
-      name: gitlab
+      name: "${APPLICATION_NAME}"
       weight: 100
     wildcardPolicy: None
   status:
@@ -27,6 +27,17 @@ objects:
       - lastTransitionTime: 2018-06-26T20:14:55Z
         status: "True"
         type: Admitted
-      host: gitlab-jason-ci-cd.apps.ae9d.example.opentlc.com
-      routerName: router
+      host: "${APPLICATION_HOSTNAME}"
+      routerName: "${APPLICATION_NAME}"
       wildcardPolicy: None
+parameters:
+    - description: The name for the application.
+        The service will be named like the application.
+      displayName: Application name.
+      name: APPLICATION_NAME
+      value: gitlab-ce
+    - description: Hostname for service routes. Set this in order to have the
+        GitLab display the correct clone urls.
+      displayName: Gitlab instance hostname
+      name: APPLICATION_HOSTNAME
+      required: true

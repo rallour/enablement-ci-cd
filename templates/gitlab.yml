@@ -1,6 +1,6 @@
 ---
-apiVersion: v1
 kind: Template
+apiVersion: v1
 metadata:
   name: gitlab-ce
   annotations:
@@ -14,6 +14,7 @@ labels:
   createdBy: gitlab-ce-template
 objects:
   - kind: SecurityContextConstraints
+    apiVersion: v1
     metadata:
       annotations:
         kubernetes.io/description: anyuid provides all features of the restricted SCC
@@ -106,63 +107,63 @@ objects:
                 - containerPort: 443
                   protocol: TCP
               env:
-            - name: GITLAB_OMNIBUS_CONFIG
-              value:
-                external_url "https://${APPLICATION_HOSTNAME}/";
-                nginx['ssl_certificate']="/etc/gitlab/${APPLICATION_HOSTNAME}.crt";
-                nginx['ssl_certificate_key']="/etc/gitlab/${APPLICATION_HOSTNAME}.key";
-                gitlab_rails['gitlab_https']=true;
-                gitlab_rails['gitlab_port']=443;
-                root_pass='${GITLAB_ROOT_PASSWORD}';
-                gitlab_rails['initial_root_password']=root_pass;
-                postgresql['enable']=false;
-                gitlab_rails['db_host'] = '${APPLICATION_NAME}-postgresql';
-                gitlab_rails['db_password']='${POSTGRESQL_PASSWORD}';
-                gitlab_rails['db_username']='${POSTGRESQL_USER}';
-                gitlab_rails['db_database']='${POSTGRESQL_DATABASE}';
-                redis['enable'] = false; gitlab_rails['redis_host']='${APPLICATION_NAME}-redis';
-                unicorn['worker_processes'] = ${UNICORN_WORKERS}; manage_accounts['enable'] = true;
-                manage_storage_directories['manage_etc'] = false; gitlab_shell['auth_file'] = '/gitlab-data/ssh/authorized_keys';
-                git_data_dirs({ 'default' => { 'path' => '/gitlab-data/git-data' } });
-                gitlab_rails['shared_path'] = '/gitlab-data/shared'; gitlab_rails['uploads_directory'] = '/gitlab-data/uploads';
-                gitlab_ci['builds_directory'] = '/gitlab-data/builds';
-                prometheus_monitoring['enable'] = false;
-                gitlab_rails['ldap_enabled'] = true;
-                gitlab_rails['ldap_servers'] = { 'main' => { 'label' => '${LDAP_LABEL}', 'host' => '${LDAP_HOST}', 'port' => '${LDAP_PORT}', 'uid' => 'uid', 'bind_dn' => '${LDAP_BIND_DN}', 'password' => '${LDAP_PASSWORD}', 'encryption' => '${LDAP_ENCRYPTION}', 'verify_certificates' => ${LDAP_VERIFY_CERTIFICATE}, 'allow_username_or_email_login' => true, 'block_auto_created_users' => false, 'active_directory' => false, 'base' => '${LDAP_BASE}', 'user_filter' => '${LDAP_USER_FILTER}', 'attributes' => { 'username' => ['uid'], 'email' => ['mail'], 'name' => 'displayName' } } };
-          resources:
-            limits:
-              cpu: '1'
-              memory: 2Gi
-            requests:
-              cpu: 500m
-              memory: 1Gi
-            volumeMounts:
-              - name: gitlab-ce-volume-1
-                mountPath: "/etc/gitlab"
-              - name: gitlab-ce-volume-2
-                mountPath: "/gitlab-data"
-            livenessProbe:
-              httpGet:
-                path: "/help"
-                port: 443
-                scheme: HTTPS
-              initialDelaySeconds: 120
-              timeoutSeconds: 1
-              periodSeconds: 10
-              successThreshold: 1
-              failureThreshold: 3
-            readinessProbe:
-              httpGet:
-                path: "/help"
-                port: 443
-                scheme: HTTPS
-              initialDelaySeconds: 20
-              timeoutSeconds: 1
-              periodSeconds: 10
-              successThreshold: 1
-              failureThreshold: 3
-            terminationMessagePath: "/dev/termination-log"
-            imagePullPolicy: IfNotPresent
+                - name: GITLAB_OMNIBUS_CONFIG
+                  value:
+                    external_url "https://${APPLICATION_HOSTNAME}/";
+                    nginx['ssl_certificate']="/etc/gitlab/${APPLICATION_HOSTNAME}.crt";
+                    nginx['ssl_certificate_key']="/etc/gitlab/${APPLICATION_HOSTNAME}.key";
+                    gitlab_rails['gitlab_https']=true;
+                    gitlab_rails['gitlab_port']=443;
+                    root_pass='${GITLAB_ROOT_PASSWORD}';
+                    gitlab_rails['initial_root_password']=root_pass;
+                    postgresql['enable']=false;
+                    gitlab_rails['db_host'] = '${APPLICATION_NAME}-postgresql';
+                    gitlab_rails['db_password']='${POSTGRESQL_PASSWORD}';
+                    gitlab_rails['db_username']='${POSTGRESQL_USER}';
+                    gitlab_rails['db_database']='${POSTGRESQL_DATABASE}';
+                    redis['enable'] = false; gitlab_rails['redis_host']='${APPLICATION_NAME}-redis';
+                    unicorn['worker_processes'] = ${UNICORN_WORKERS}; manage_accounts['enable'] = true;
+                    manage_storage_directories['manage_etc'] = false; gitlab_shell['auth_file'] = '/gitlab-data/ssh/authorized_keys';
+                    git_data_dirs({ 'default' => { 'path' => '/gitlab-data/git-data' } });
+                    gitlab_rails['shared_path'] = '/gitlab-data/shared'; gitlab_rails['uploads_directory'] = '/gitlab-data/uploads';
+                    gitlab_ci['builds_directory'] = '/gitlab-data/builds';
+                    prometheus_monitoring['enable'] = false;
+                    gitlab_rails['ldap_enabled'] = true;
+                    gitlab_rails['ldap_servers'] = { 'main' => { 'label' => '${LDAP_LABEL}', 'host' => '${LDAP_HOST}', 'port' => '${LDAP_PORT}', 'uid' => 'uid', 'bind_dn' => '${LDAP_BIND_DN}', 'password' => '${LDAP_PASSWORD}', 'encryption' => '${LDAP_ENCRYPTION}', 'verify_certificates' => ${LDAP_VERIFY_CERTIFICATE}, 'allow_username_or_email_login' => true, 'block_auto_created_users' => false, 'active_directory' => false, 'base' => '${LDAP_BASE}', 'user_filter' => '${LDAP_USER_FILTER}', 'attributes' => { 'username' => ['uid'], 'email' => ['mail'], 'name' => 'displayName' } } };
+              resources:
+                limits:
+                  cpu: '1'
+                  memory: 2Gi
+                requests:
+                  cpu: 500m
+                  memory: 1Gi
+              volumeMounts:
+                - name: gitlab-ce-volume-1
+                  mountPath: "/etc/gitlab"
+                - name: gitlab-ce-volume-2
+                  mountPath: "/gitlab-data"
+              livenessProbe:
+                httpGet:
+                  path: "/help"
+                  port: 443
+                  scheme: HTTPS
+                initialDelaySeconds: 120
+                timeoutSeconds: 1
+                periodSeconds: 10
+                successThreshold: 1
+                failureThreshold: 3
+              readinessProbe:
+                httpGet:
+                  path: "/help"
+                  port: 443
+                  scheme: HTTPS
+                initialDelaySeconds: 20
+                timeoutSeconds: 1
+                periodSeconds: 10
+                successThreshold: 1
+                failureThreshold: 3
+              terminationMessagePath: "/dev/termination-log"
+              imagePullPolicy: IfNotPresent
           restartPolicy: Always
           terminationGracePeriodSeconds: 30
           dnsPolicy: ClusterFirst
@@ -204,28 +205,28 @@ objects:
               persistentVolumeClaim:
                 claimName: "${APPLICATION_NAME}-redis-data"
           containers:
-            - name: gitlab-ce-redis
-              image: gitlab-ce-redis
-              command:
-                - "/bin/sh"
-                - "-ec"
-              args:
-                - exec redis-server
-              ports:
-                - containerPort: 6379
-                  protocol: TCP
-              resources:
-                limits:
-                  cpu: '1'
-                  memory: 512Mi
-                requests:
-                  cpu: 100m
-                  memory: 300Mi
-              volumeMounts:
-                - name: gitlab-ce-volume-4
-                  mountPath: "/data"
-              terminationMessagePath: "/dev/termination-log"
-              imagePullPolicy: IfNotPresent
+          - image: gitlab-ce-redis
+            name: gitlab-ce-redis
+            command:
+              - "/bin/sh"
+              - "-ec"
+            args:
+              - exec redis-server
+            ports:
+              - containerPort: 6379
+                protocol: TCP
+            resources:
+              limits:
+                cpu: '1'
+                memory: 512Mi
+              requests:
+                cpu: 100m
+                memory: 300Mi
+            volumeMounts:
+              - name: gitlab-ce-volume-4
+                mountPath: "/data"
+            terminationMessagePath: "/dev/termination-log"
+            imagePullPolicy: IfNotPresent
           restartPolicy: Always
           terminationGracePeriodSeconds: 30
           dnsPolicy: ClusterFirst
@@ -265,10 +266,10 @@ objects:
             automatic: true
             containerNames:
               - gitlab-ce-postgresql
-          from:
-            kind: ImageStreamTag
-            name: postgresql:9.4
-            namespace: openshift
+            from:
+              kind: ImageStreamTag
+              name: postgresql:9.4
+              namespace: openshift
       replicas: 1
       test: false
       selector:
@@ -280,54 +281,47 @@ objects:
             app: "${APPLICATION_NAME}"
             deploymentconfig: "${APPLICATION_NAME}-postgresql"
         spec:
+          containers:
+          - image: gitlab-ce-postgresql
+            name: gitlab-ce-postgresql
+            ports:
+              - containerPort: 5432
+                protocol: TCP
+            readinessProbe:
+              timeoutSeconds: 1
+              initialDelaySeconds: 5
+              exec:
+                command:
+                  - "/bin/sh"
+                  - "-i"
+                  - "-c"
+                  - psql -h 127.0.0.1 -U $POSTGRESQL_USER -q -d $POSTGRESQL_DATABASE -c
+                    'SELECT 1'
+            livenessProbe:
+              timeoutSeconds: 1
+              initialDelaySeconds: 30
+              tcpSocket:
+                port: 5432
+            env:
+              - name: POSTGRESQL_USER
+                value: "${POSTGRESQL_USER}"
+              - name: POSTGRESQL_PASSWORD
+                value: "${POSTGRESQL_PASSWORD}"
+              - name: POSTGRESQL_DATABASE
+                value: "${POSTGRESQL_DATABASE}"
+              - name: POSTGRESQL_ADMIN_PASSWORD
+                value: "${POSTGRESQL_ADMIN_PASSWORD}"
+            volumeMounts:
+              - name: gitlab-ce-volume-3
+                mountPath: "/var/lib/pgsql/data"
+            terminationMessagePath: "/dev/termination-log"
+            imagePullPolicy: IfNotPresent
+          restartPolicy: Always
+          terminationGracePeriodSeconds: 30
           volumes:
             - name: gitlab-ce-volume-3
               persistentVolumeClaim:
                 claimName: "${APPLICATION_NAME}-postgresql"
-          containers:
-            - name: gitlab-ce-postgresql
-              image: gitlab-ce-postgresql
-              ports:
-                - containerPort: 5432
-                  protocol: TCP
-              readinessProbe:
-                timeoutSeconds: 1
-                initialDelaySeconds: 5
-                exec:
-                  command:
-                    - "/bin/sh"
-                    - "-i"
-                    - "-c"
-                    - psql -h 127.0.0.1 -U $POSTGRESQL_USER -q -d $POSTGRESQL_DATABASE -c
-                      'SELECT 1'
-              livenessProbe:
-                timeoutSeconds: 1
-                initialDelaySeconds: 30
-                tcpSocket:
-                  port: 5432
-              env:
-                - name: POSTGRESQL_USER
-                  value: "${POSTGRESQL_USER}"
-                - name: POSTGRESQL_PASSWORD
-                  value: "${POSTGRESQL_PASSWORD}"
-                - name: POSTGRESQL_DATABASE
-                  value: "${POSTGRESQL_DATABASE}"
-                - name: POSTGRESQL_ADMIN_PASSWORD
-                  value: "${POSTGRESQL_ADMIN_PASSWORD}"
-              resources:
-                limits:
-                  cpu: '1'
-                  memory: 512Mi
-                requests:
-                  cpu: 300m
-                  memory: 300Mi
-              volumeMounts:
-                - name: gitlab-ce-volume-3
-                  mountPath: "/var/lib/pgsql/data"
-              terminationMessagePath: "/dev/termination-log"
-              imagePullPolicy: IfNotPresent
-          restartPolicy: Always
-          terminationGracePeriodSeconds: 30
           dnsPolicy: ClusterFirst
   - kind: Service
     apiVersion: v1
@@ -424,31 +418,6 @@ objects:
       resources:
         requests:
           storage: "${POSTGRESQL_VOL_SIZE}"
-  - kind: Route
-    apiVersion: v1
-    metadata:
-      name: gitlab
-      labels:
-        app: gitlab
-        name: gitlab
-    spec:
-      host: gitlab-jason-ci-cd.apps.ae9d.example.opentlc.com
-      port:
-        targetPort: 443-https
-      to:
-        kind: Service
-        name: gitlab
-        weight: 100
-      wildcardPolicy: None
-    status:
-      ingress:
-        - conditions:
-            - lastTransitionTime: 2018-06-26T20:14:55Z
-              status: "True"
-              type: Admitted
-          host: gitlab-jason-ci-cd.apps.ae9d.example.opentlc.com
-          routerName: router
-          wildcardPolicy: None
 parameters:
   - description: A label that will be seen by the user at login
     displayName: LDAP label.
