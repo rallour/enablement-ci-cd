@@ -21,3 +21,9 @@ openshift_cluster_content:
     params: "{{ playbook_dir }}/params/gitlab"
     tags:
     - gitlab
+  - name: "jenkins-mongodb"
+    namespace: "{{ ci_cd_namespace }}"
+    template: "{{ playbook_dir }}/templates/mongodb.yml"
+    params: "{{ playbook_dir }}/params/mongodb"
+    tags:
+    - mongodb
